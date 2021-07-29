@@ -1,0 +1,16 @@
+<mat-card>
+    <h2>Contact Infomation System</h2>
+    <div class="button-row">
+        <button mat-raised-button color="primary" (click)="addContactInfo()">Add</button>
+        <button mat-raised-button color="primary" (click)="viewContactInfo()">View</button>
+    </div>
+
+    <div class="containerDiv">
+        <div *ngIf="mode==='create'">
+            <create-contact></create-contact>
+        </div>
+        <div *ngIf="mode==='view'">
+            <view-contact></view-contact>
+        </div>
+    </div>
+</mat-card>

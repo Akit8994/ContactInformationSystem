@@ -1,0 +1,43 @@
+<mat-card>
+    <form [formGroup]="contactInfo">
+        <table>
+            <tr *ngFor="let row of data">
+                <td>
+                    <mat-label>{{row.labelName}}</mat-label>
+                </td>
+                <td>
+                    <ng-container *ngIf="row.fieldType !== 'drop_down'">
+                        <mat-form-field appearance="outline">
+                            <input type="{{row.fieldType}}" matInput id="{{row.id}}" maxlength="{{row.maxLength}}"
+                                formControlName="{{row.id}}">
+                            <!-- <mat-error *ngIf="{{row.id}}.hasError('email') && !emailFormControl.hasError('required')">
+                                Please enter a valid input
+                            </mat-error>
+                            <mat-error *ngIf="emailFormControl.hasError('required')">
+                                Email is <strong>required</strong>
+                            </mat-error> -->
+                        </mat-form-field>
+                    </ng-container>
+
+
+
+                    <mat-form-field *ngIf="row.fieldType === 'drop_down'" appearance="outline">
+                        <mat-select formControlName="{{row.id}}">
+                            <mat-option *ngFor="let option of row.options" [value]="option.key">
+                                {{option.value}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button mat-raised-button [disabled]="!contactInfo.valid" color="primary" type="submit"
+                        (click)="onSubmit()">Create</button>
+                    <button mat-raised-button [disabled]="!contactInfo.touched" type="cancel"
+                        (click)="clearForm()">Clear</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</mat-card>
