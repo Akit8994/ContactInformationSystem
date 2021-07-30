@@ -7,10 +7,13 @@
 
     <div class="containerDiv">
         <div *ngIf="mode==='create'">
-            <create-contact></create-contact>
+            <create-contact (savedContactInfo)="createUpdateContact($event)" [updateContactData]="updateContactData"
+            [allPhoneNumber]="allPhoneNumber">
+            </create-contact>
         </div>
         <div *ngIf="mode==='view'">
-            <view-contact></view-contact>
+            <contact-information-view [allContactInfo]="allContactInfo" (selectedRowData)="updateContact($event)">
+            </contact-information-view>
         </div>
     </div>
 </mat-card>
