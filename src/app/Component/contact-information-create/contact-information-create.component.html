@@ -1,5 +1,7 @@
 <mat-card>
-    <mat-card-title>Create Contact</mat-card-title>
+    <mat-card-header>
+        <mat-card-title>Create Contact</mat-card-title>
+    </mat-card-header>
     <h3 *ngIf="showError">Same Phone Number Exists!!</h3>
     <form [formGroup]="contactInfo">
         <table>

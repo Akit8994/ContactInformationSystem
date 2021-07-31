@@ -12,23 +12,23 @@ export class ContactInformationServiceService {
 
   getContactDetails(): Observable<any[]> {
     const data = [{
-      firstName: 'test',
-      lastName: 'test',
-      emailAddress: 'test@test.com',
-      phoneNumber: '1231231233',
+      firstName: 'Ankit',
+      lastName: 'Gaurav',
+      emailAddress: 'akt.grv@gmail.com',
+      phoneNumber: '9988776655',
       contactStatus: 'Active'
     },
     {
-      firstName: 'test1',
-      lastName: 'test',
-      emailAddress: 'test@mail.com',
-      phoneNumber: '1234567890',
+      firstName: 'Gaurav',
+      lastName: 'Ankit',
+      emailAddress: 'grv.akt@mail.com',
+      phoneNumber: '1122336655',
       contactStatus: 'Active'
     },
     {
-      firstName: 'test2',
-      lastName: 'test',
-      emailAddress: 'gello@awd.com',
+      firstName: 'Kumar',
+      lastName: 'Gaurav',
+      emailAddress: 'Kumar.Gaurav@outlook.com',
       phoneNumber: '0987654321',
       contactStatus: 'Inactive',
     }];
