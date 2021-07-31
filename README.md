@@ -9,11 +9,11 @@ Prerequisite :
 
 1. Git clone from url or download zip and unpack.
 2. Go to root folder of project.
-3. run these commands
-    i. npm install
-    ii. npm run build
-    iii. npm start
-4. Navigate to `http://localhost:4200/`.
+3. Run these commands.
+4. npm install
+5. npm run build
+6. npm start
+7. Navigate to `http://localhost:4200/`.
 
 
 ## Running unit tests
