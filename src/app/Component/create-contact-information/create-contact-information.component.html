@@ -1,9 +1,12 @@
 <mat-card>
-    <mat-card-title *ngIf="dataSaved && !contactInfo.touched" class="title-card-center"> Contact Information Added
-        Successfully</mat-card-title>
+    <!--     <mat-card-title *ngIf="dataSaved && !contactInfo.touched && !error" class="title-card-center"> Contact Information
+        Added Successfully</mat-card-title>
     <mat-card-title *ngIf="error && !contactInfo.touched" class="title-card-center"> Phone Number Already Exists
     </mat-card-title>
-
+ -->
+    <mat-card-title>
+        <button mat-raised-button color="primary" (click)="viewContacts()">View Contacts</button>
+    </mat-card-title>
     <form [formGroup]="contactInfo">
         <table>
             <tr *ngFor="let row of data">

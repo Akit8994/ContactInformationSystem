@@ -15,8 +15,7 @@ export class CreateContactInformationComponent implements OnInit {
   dataSaved: boolean = false;
   error: boolean = false;
   @Output() savedContactInfo = new EventEmitter<string>();
-  @Input() updateContactData: Contact;
-  @Input() allPhoneNumber: string[];
+  @Output() mode = new EventEmitter<string>();
 
   constructor(private fb: FormBuilder) {
     this.contactInfo = fb.group({
@@ -37,13 +36,9 @@ export class CreateContactInformationComponent implements OnInit {
       { id: 'emailAddress', labelName: 'Email Address', fieldType: 'email', maxLength: 50 },
       { id: 'phoneNumber', labelName: 'Phone Number', fieldType: 'text', maxLength: 10 }
     ];
-    if (this.updateContactData) {
-      this.contactInfo.setValue(this.updateContactData);
-    }
   }
 
   onSubmit() {
-    if (this.validateDuplicate()) return;
     this.savedContactInfo.emit(this.contactInfo.getRawValue());
     this.contactInfo.reset();
     this.dataSaved = true;
@@ -51,12 +46,11 @@ export class CreateContactInformationComponent implements OnInit {
 
   clearForm() {
     this.dataSaved = false;
+    this.error = false;
     this.contactInfo.reset();
   }
 
-  validateDuplicate(): boolean {
-    const phoneNumber = this.contactInfo.get('phoneNumber').value;
-    return this.allPhoneNumber.includes(phoneNumber);
+  viewContacts() {
+    this.mode.emit('view');
   }
-
 }

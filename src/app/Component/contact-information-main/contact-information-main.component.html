@@ -1,19 +1,19 @@
-<mat-card>
-    <h2>Contact Infomation System</h2>
-    <div class="button-row">
-        <button mat-raised-button color="primary" (click)="addContactInfo()">Add</button>
-        <button mat-raised-button color="primary" (click)="viewContactInfo()">View</button>
-    </div>
+<create-contact *ngIf="mode === 'create'" (savedContactInfo)="savedContact($event)" (mode)="changeMode('view')">
+</create-contact>
 
-    <div class="containerDiv">
-        <div *ngIf="mode==='create'">
-            <create-contact (savedContactInfo)="createUpdateContact($event)" [updateContactData]="updateContactData"
-            [allPhoneNumber]="allPhoneNumber">
-            </create-contact>
-        </div>
-        <div *ngIf="mode==='view'">
-            <contact-information-view [allContactInfo]="allContactInfo" (selectedRowData)="updateContact($event)">
-            </contact-information-view>
-        </div>
+<ng-container *ngIf="mode === 'view'">
+    <div class="row">
+        <button mat-raised-button color="primary" (click)="changeMode('create')">Add Contact</button>
+        <button mat-raised-button color="primary" (click)="editContact()">Update Contact</button>
+        <button mat-raised-button color="primary" (click)="deleteContact()">Delete Contact</button>
     </div>
-</mat-card>
+    <div>
+        <ag-grid-angular style="width: 100%; height: 400px;" class="ag-theme-blue" (gridReady)="onGridReady($event)"
+            [columnDefs]="columnDefs" [rowData]="contactInfos" rowSelection="single" pagination="true"
+            paginationPageSize=10 (dataChanged)="onrowValueChanged($event)">
+        </ag-grid-angular>
+    </div>
+</ng-container>
+
+
+<!-- (selectionChanged)="onSelectionChanged($event)" (cellEditingStopped)="onCellEditingStopped($event)" -->

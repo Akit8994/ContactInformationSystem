@@ -13,3 +13,16 @@ mat-row:hover {
 div {
     color: maroon;
 }
+
+mat-table {
+    width: 60%;
+}
+
+td {
+    width: 20%;
+}
+
+.box-container {
+    height: 400px;
+    overflow: auto;
+}
