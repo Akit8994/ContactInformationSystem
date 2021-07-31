@@ -1,19 +1,21 @@
-<create-contact *ngIf="mode === 'create'" (savedContactInfo)="savedContact($event)" (mode)="changeMode('view')">
-</create-contact>
-
-<ng-container *ngIf="mode === 'view'">
+<mat-card>
+    <mat-card-title>Contact Management</mat-card-title>
     <div class="row">
-        <button mat-raised-button color="primary" (click)="changeMode('create')">Add Contact</button>
-        <button mat-raised-button color="primary" (click)="editContact()">Update Contact</button>
+        <button mat-raised-button color="primary" (click)="createContact()">Add Contact</button>
+        <button mat-raised-button color="primary" (click)="updateContact()">Update Contact</button>
         <button mat-raised-button color="primary" (click)="deleteContact()">Delete Contact</button>
     </div>
-    <div>
-        <ag-grid-angular style="width: 100%; height: 400px;" class="ag-theme-blue" (gridReady)="onGridReady($event)"
-            [columnDefs]="columnDefs" [rowData]="contactInfos" rowSelection="single" pagination="true"
-            paginationPageSize=10 (dataChanged)="onrowValueChanged($event)">
-        </ag-grid-angular>
-    </div>
-</ng-container>
+</mat-card>
+<br>
+<mat-card>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{column.value}}</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element[column.id]}}</mat-cell>
+        </ng-container>
 
-
-<!-- (selectionChanged)="onSelectionChanged($event)" (cellEditingStopped)="onCellEditingStopped($event)" -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row (click)="selectedRow(row)" [ngClass]="{'highlight': selectedRowIndex === row.phoneNumber}"
+            *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+</mat-card>

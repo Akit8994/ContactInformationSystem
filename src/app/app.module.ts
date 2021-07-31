@@ -4,22 +4,19 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule,
-  MatTableModule, MatCheckboxModule
+  MatTableModule, MatDialogModule
 } from '@angular/material';
-import { AgGridModule } from 'ag-grid-angular';
 
 import { AppComponent } from './app.component';
 import { ContactInformationMainComponent } from './Component/contact-information-main/contact-information-main.component';
-import { CreateContactInformationComponent } from './Component/create-contact-information/create-contact-information.component';
-import { ContactInformationViewComponent } from './Component/contact-information-view/contact-information-view.component';
-import { ContactInformationServiceService } from './Service/contact-information-service.service'
+import { ContactInformationServiceService } from './Service/contact-information-service.service';
+import { ContactInformationCreateComponent } from './Component/contact-information-create/contact-information-create.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ContactInformationMainComponent,
-    CreateContactInformationComponent,
-    ContactInformationViewComponent
+    ContactInformationCreateComponent
   ],
   imports: [
     BrowserModule,
@@ -32,10 +29,10 @@ import { ContactInformationServiceService } from './Service/contact-information-
     FormsModule,
     MatSelectModule,
     MatTableModule,
-    MatCheckboxModule,
-    AgGridModule.withComponents([])
+    MatDialogModule
   ],
   providers: [ContactInformationServiceService],
+  entryComponents: [ContactInformationCreateComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

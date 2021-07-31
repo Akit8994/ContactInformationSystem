@@ -21,5 +21,5 @@ export interface FormFieldData {
 
 export interface ColumnData {
   id: string;
-  value: string
+  value: string;
 }

@@ -1,122 +1,103 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Contact } from '../../Model/Contact';
-import { ColDef, GridApi, ColumnApi } from 'ag-grid-community';
-import { ContactInformationServiceService } from 'src/app/Service/contact-information-service.service';
-/* import { NotifierService } from 'angular-notifier'; */
+import { ContactInformationServiceService } from '../../Service/contact-information-service.service';
+import { ContactInformationCreateComponent } from '../../Component/contact-information-create/contact-information-create.component';
 
 @Component({
-  selector: 'app-contact-information-main',
+  selector: 'contact-information-main',
   templateUrl: './contact-information-main.component.html',
   styleUrls: ['./contact-information-main.component.scss']
 })
 export class ContactInformationMainComponent implements OnInit {
-  mode: 'init' | 'create' | 'view' = 'view';
+  dataSource: Contact[];
+  displayedColumns = ['firstName', 'lastName', 'emailAddress', 'phoneNumber', 'contactStatus'];
+  selectedRowIndex: string;
+  contactDetail: Contact;
+  columnNames = [
+    { id: 'firstName', value: 'First Name' },
+    { id: 'lastName', value: 'Last Name' },
+    { id: 'emailAddress', value: 'Email' },
+    { id: 'phoneNumber', value: 'Phone No.' },
+    { id: 'contactStatus', value: 'Status' }
+  ];
 
-  // row data and column definitions
-  private contactInfos: Contact[];
-  private columnDefs: ColDef[];
-
-  // gridApi and columnApi
-  private api: GridApi;
-  private columnApi: ColumnApi;
-  private contactsTobeEdited: any;
-  status: any;
-
-
-  constructor(private contactService: ContactInformationServiceService) {
-    this.columnDefs = this.createColumnDefs();
-  }
+  constructor(
+    private contactService: ContactInformationServiceService,
+    public dialog: MatDialog,
+    private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.contactService.getContactDetails().subscribe(
       data => {
-        this.contactInfos = data
+        this.dataSource = [...data];
       },
       error => {
-        console.log(error);
-      }
-    )
-  }
-
-  // one grid initialisation, grap the APIs and auto resize the columns to fit the available space
-  onGridReady(params): void {
-    this.api = params.api;
-    this.columnApi = params.columnApi;
-    this.api.sizeColumnsToFit();
-  }
-
-  private createColumnDefs() {
-    return [
-      { headerName: 'First Name', field: 'firstName', suppressSorting: false, editable: true },
-      { headerName: 'Last Name', field: 'lastName', editable: true },
-      { headerName: 'Email', field: 'emailAddress', editable: true },
-      { headerName: 'Mobile', field: 'phoneNumber', editable: false },
-      { headerName: 'Status', field: 'contactStatus', editable: true }
-    ]
-  }
-
-  editContact() {
-    if (this.api.getSelectedRows().length == 0) {
-      alert('Please select a row for editing');
-      return;
-    }
-    var row = this.api.getSelectedRows();
-
-    const savedDetails = this.contactInfos.find(contact => contact.phoneNumber === row[0].phoneNumber);
-    if (savedDetails && isSameValue(row[0], savedDetails)) {
-      alert('No data Edited');
-      return;
-    }
-    this.contactService.updateContactDetails(row[0], this.contactInfos)
-      .subscribe(data => {
-        alert('Contact updated successfully!!')
-        console.log(data);
-      },
-        error => {
-          alert('Contact updated failed!!')
-        });
-  }
-
-  changeMode(string) {
-    this.mode = string;
-  }
-
-  savedContact(data: Contact) {
-    const index = this.contactInfos.findIndex(contact => contact.phoneNumber === data.phoneNumber);
-    if (index !== -1) {
-      alert('Failed : Phone number already exists');
-      return;
-    } else {
-      this.contactService.addContactDetails(data, this.contactInfos).subscribe((data: Contact[]) => {
-        this.contactInfos = data;
-        this.api.refreshCells();
-        alert('Contact created successfully!!')
-      }, error => {
-        alert('Contact created failed!!')
+        console.error(error);
       });
-    }
   }
 
-  deleteContact() {
-    var selectedRows = this.api.getSelectedRows();
-    if (selectedRows.length === 0) {
-      alert('Please select a row for deleting');
+  createContact(): void {
+    const phoneNumbers = this.dataSource ? this.dataSource.map(c => c.phoneNumber) : null;
+    const createData = { type: 'create', allPhoneNumbers: phoneNumbers };
+    this.launchDialog(createData);
+  }
+
+  updateContact(): void {
+    if (!this.contactDetail) {
+      alert('Please select a row to Update');
       return;
     }
-    this.contactService.deleteContactDetails(selectedRows[0], this.contactInfos).subscribe((data: Contact[]) => {
-      this.contactInfos = data;
-      this.api.refreshCells();
-      alert('Contact deleted successfully!!')
-    }, error => {
-      alert('Contact delete failed!!')
+    const updateData = { type: 'update', contactDetail: this.contactDetail };
+    this.launchDialog(updateData);
+  }
+
+  deleteContact(): void {
+    if (!this.contactDetail) {
+      alert('Please select a row to Update');
+      return;
+    }
+    this.contactService.deleteContactDetails(this.contactDetail, this.dataSource).subscribe((data: Contact[]) => {
+      this.dataSource = [...data];
+      this.selectedRowIndex = '';
+      this.cdr.detectChanges();
+    },
+      error => {
+        alert('Contact delete failed!!');
+      });
+  }
+
+  launchDialog(setData): void {
+    const dialogRef = this.dialog.open(ContactInformationCreateComponent, {
+      width: '600px',
+      data: setData
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (setData.type === 'create') {
+          this.contactService.addContactDetails(result, this.dataSource).subscribe((resp: Contact[]) => {
+            this.dataSource = [...resp];
+          },
+            error => {
+              alert('Contact created failed!!');
+            });
+        } else if (setData.type === 'update') {
+          this.contactService.updateContactDetails(result, this.dataSource)
+            .subscribe(resp => {
+              this.dataSource = [...resp];
+            },
+              error => {
+                alert('Contact updated failed!!');
+              });
+        }
+      }
+      this.selectedRowIndex = '';
+      this.contactDetail = null;
     });
   }
-}
 
-function isSameValue(c1: Contact, c2: Contact) {
-  if (c1.firstName !== c2.firstName) return false
-  if (c1.lastName !== c2.lastName) return false
-  if (c1.emailAddress !== c2.emailAddress) return false
-  if (c1.contactStatus !== c2.contactStatus) return false
-  return true;
+  selectedRow(row) {
+    this.contactDetail = row;
+    this.selectedRowIndex = row.phoneNumber;
+  }
 }

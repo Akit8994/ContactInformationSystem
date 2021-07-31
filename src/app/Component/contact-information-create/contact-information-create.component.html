@@ -1,12 +1,6 @@
 <mat-card>
-    <!--     <mat-card-title *ngIf="dataSaved && !contactInfo.touched && !error" class="title-card-center"> Contact Information
-        Added Successfully</mat-card-title>
-    <mat-card-title *ngIf="error && !contactInfo.touched" class="title-card-center"> Phone Number Already Exists
-    </mat-card-title>
- -->
-    <mat-card-title>
-        <button mat-raised-button color="primary" (click)="viewContacts()">View Contacts</button>
-    </mat-card-title>
+    <mat-card-title>Create Contact</mat-card-title>
+    <h3 *ngIf="showError">Same Phone Number Exists!!</h3>
     <form [formGroup]="contactInfo">
         <table>
             <tr *ngFor="let row of data">
@@ -18,12 +12,7 @@
                         <mat-form-field appearance="outline">
                             <input type="{{row.fieldType}}" matInput id="{{row.id}}" maxlength="{{row.maxLength}}"
                                 formControlName="{{row.id}}">
-                            <!-- <mat-error *ngIf="{{row.id}}.hasError('email') && !emailFormControl.hasError('required')">
-                                Please enter a valid input
-                            </mat-error>
-                            <mat-error *ngIf="emailFormControl.hasError('required')">
-                                Email is <strong>required</strong>
-                            </mat-error> -->
+                            <mat-error *ngIf="row.id">Vaid {{row.labelName}} is Required</mat-error>
                         </mat-form-field>
                     </ng-container>
                     <mat-form-field *ngIf="row.fieldType === 'drop_down'" appearance="outline">
@@ -32,15 +21,18 @@
                                 {{option.value}}
                             </mat-option>
                         </mat-select>
+                        <mat-error *ngIf="row.id">Vaid {{row.labelName}} is Required</mat-error>
                     </mat-form-field>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button mat-raised-button [disabled]="!contactInfo.valid" color="primary" type="submit"
-                        (click)="onSubmit()">Create</button>
-                    <button mat-raised-button [disabled]="!contactInfo.touched" type="cancel"
-                        (click)="clearForm()">Clear</button>
+                    <div class="row">
+                        <button mat-raised-button [disabled]="!contactInfo.valid" color="primary" type="submit"
+                            (click)="onSubmit()">Save</button>
+                        <button mat-raised-button [disabled]="!contactInfo.touched" type="cancel"
+                            (click)="cancel()">Close</button>
+                    </div>
                 </td>
             </tr>
         </table>
